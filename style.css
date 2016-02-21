@@ -1,0 +1,35 @@
+.valores>tr>td{
+  text-align: right;
+}
+thead{
+  background-color: #BDC3C7;
+}
+
+.mensaje{
+  overflow: hidden;
+  padding: 12px;
+  font-size: 26px;
+  display:block;
+  border-bottom: 2px #CCC solid;
+}
+.green{
+  color: #ECF0F1;
+  background-color: #1ABC9C;
+  border-radius: 4px;
+  border: none;
+}
+.left {float: left;}
+.right{float: right;}
+
+.desgloce{
+  margin-top: 32px;
+}
+
+.titular{
+  padding: 20px 0px 20px 0px;
+  margin: 0px;
+  background-color: #2c3e50;
+}
+.titular h1{
+  color: #ECF0F1;
+}
