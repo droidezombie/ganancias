@@ -1,13 +1,12 @@
-var cargas=0.17, categoria, texto
+var cargas=0.17, texto,
   categorias = [
-    //{"cat":0, "from":0,     "to":0,     "basis":0,    "perc":0.00},
-    {"cat":1, "from":0,     "to":10000, "basis":0,    "perc":0.09},
-    {"cat":2, "from":10000, "to":20000, "basis":900,  "perc":0.14},
-    {"cat":3, "from":20000, "to":30000, "basis":2300, "perc":0.19},
-    {"cat":4, "from":30000, "to":60000, "basis":4200, "perc":0.23},
-    {"cat":5, "from":60000, "to":90000, "basis":11100,"perc":0.27},
-    {"cat":6, "from":90000, "to":120000,"basis":19200,"perc":0.31},
-    {"cat":7, "from":120000,"to":999999,"basis":28500,"perc":0.35}
+    {from:0,     to:10000, basis:0,    perc:0.09},
+    {from:10000, to:20000, basis:900,  perc:0.14},
+    {from:20000, to:30000, basis:2300, perc:0.19},
+    {from:30000, to:60000, basis:4200, perc:0.23},
+    {from:60000, to:90000, basis:11100,perc:0.27},
+    {from:90000, to:120000,basis:19200,perc:0.31},
+    {from:120000,to:999999,basis:28500,perc:0.35}
   ],
   tabla = {
     SB: {val:0,concepto:"Sueldo Bruto"},
@@ -23,27 +22,19 @@ var cargas=0.17, categoria, texto
 
 //-----------------------------------------------
 function calcularValoresIniciales(){
-  with(tabla){
-    SB.val = Number($('#SB').val());
-    GBA.val = (SB.val*13);
-    GNA.val = GBA.val*(1-cargas);
-    MNI.val = ($('#soltero').is(':checked'))?18880:25000;
-    GNI.val = MNI.val*13;
-    GI.val = GNA.val-GNI.val;
-  }
+    tabla.SB.val = Number($('#SB').val());
+    tabla.GBA.val = (tabla.SB.val*13);
+    tabla.GNA.val = tabla.GBA.val*(1-cargas);
+    tabla.MNI.val = ($('#soltero').is(':checked'))?18880:25000;
+    tabla.GNI.val = tabla.MNI.val*13;
+    tabla.GI.val = tabla.GNA.val-tabla.GNI.val;
 }
-
-function obtenerCategoria(){ //poner un foreach
-  for(var i=0; i<categorias.length; i++){
-    if(tabla.GI.val<categorias[i].to){
-      categoria=categorias[i];
-      break;
-    }
-  }
-}
-
 function calcularGanancias(){
-  tabla.IGA.val = (categoria.basis+(categoria.perc*(tabla.GI.val-categoria.from)));
+  var cat=null;
+  for(var i=0;i<categorias.length && !cat;){
+    (tabla.GI.val<categorias[i].to)?cat=i:i++;
+  }
+  tabla.IGA.val = (categorias[i].basis+(categorias[i].perc*(tabla.GI.val-categorias[i].from)));
   tabla.IGM.val = (tabla.IGA.val/13);
   tabla.NF.val = (tabla.SB.val*(1-cargas)-tabla.IGM.val)
 }
@@ -56,32 +47,24 @@ function imprimirTabla(){
   })
 }
 function mostrarDesgloce(){
-  with(tabla){
-    $('.bruto').text("$ "+SB.val)
-    $('.carga').text("$ "+(SB.val*cargas).toFixed(2))
-    $('.ganancias').text("$ "+IGM.val)
-    $('.neto').text("$ "+NF.val)
-  }
+    $('.bruto').text("$ "+tabla.SB.val)
+    $('.carga').text("$ "+(tabla.SB.val*cargas).toFixed(2))
+    $('.ganancias').text("$ "+tabla.IGM.val)
+    $('.neto').text("$ "+tabla.NF.val)
 }
 //-----------------------------------------------
 $(document).ready(function(){
   $('#calcular').on('click',function(){
     calcularValoresIniciales();
-    obtenerCategoria();
     if (tabla.GNA.val>tabla.GNI.val){
       calcularGanancias();
     }else{
-      with(tabla){
-        GI.val=0;
-        IGA.val=0;
-        IGM.val=0;
-        NF.val=tabla.SB.val*(1-cargas);
-      }
+        tabla.GI.val=0;
+        tabla.IGA.val=0;
+        tabla.IGM.val=0;
+        tabla.NF.val=tabla.SB.val*(1-cargas);
     }
     imprimirTabla();
     mostrarDesgloce();
   });
 });
-//agregar tooltips explicando c/concepto
-//generar acordeon en conceptos agrupados
-//fixear el ancho de la tabla
