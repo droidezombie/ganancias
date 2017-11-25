@@ -1,0 +1,5 @@
+sudo apt-get install libreadline6 libreadline6-dev
+ldd ./Ejecutable      ->   ver bibliotecas que tiene instaladas
+gedit .bashrc
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~Escritorio/tp-2017-2c-PEQL/BibliotecasCompartidas/Debug
+	reload
